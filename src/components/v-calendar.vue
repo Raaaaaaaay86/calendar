@@ -18,7 +18,6 @@
 import {
   reactive,
   computed,
-  ref,
   watch,
 } from 'vue';
 import { useStore } from 'vuex';
@@ -38,9 +37,6 @@ export default {
   setup(props) {
     const store = useStore();
     const dateArray = reactive(new Array(36).fill(null));
-    const lastDateOfMonth = ref(new Date(new Date(props.currentTimestamp).getFullYear(), new Date(props.currentTimestamp).getMonth(), 0));
-    const weekDayOfFirstDate = ref(new Date(new Date(props.currentTimestamp).getFullYear(), new Date(props.currentTimestamp).getMonth(), 1).getDay());
-    const lastDateOfLastMonth = ref(new Date(new Date(props.currentTimestamp).getFullYear(), new Date(props.currentTimestamp).getMonth(), 0).getDate());
 
     const renderCalendar = () => {
       const date = new Date(props.currentTimestamp);
@@ -114,10 +110,7 @@ export default {
       return 'selected';
     };
 
-    watch(() => props.currentTimestamp, (newTs) => {
-      lastDateOfMonth.value = new Date(new Date(newTs).getFullYear(), new Date(props.currentTimestamp).getMonth(), 0);
-      weekDayOfFirstDate.value = new Date(new Date(newTs).getFullYear(), new Date(newTs).getMonth(), 1).getDay();
-      lastDateOfLastMonth.value = new Date(new Date(newTs).getFullYear(), new Date(newTs).getMonth(), 0).getDate();
+    watch(() => props.currentTimestamp, () => {
       dateArray.fill(null);
       renderCalendar();
     });
@@ -128,9 +121,6 @@ export default {
       isSelected,
       tempSelectedDate,
       select,
-      lastDateOfMonth,
-      weekDayOfFirstDate,
-      lastDateOfLastMonth,
     };
   },
 };
