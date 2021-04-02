@@ -3,34 +3,14 @@
   <v-icon class="icon--calendar" @click="openCalendarModal()">
     <i class="far fa-calendar"></i>
   </v-icon>
-  <div class="weekDatepicker__date">
-    <p>M</p>
-    <p>01</p>
-  </div>
-  <div class="weekDatepicker__date">
-    <p>T</p>
-    <p>02</p>
-  </div>
-  <div class="weekDatepicker__date selected">
-    <p>W</p>
-    <p>03</p>
-  </div>
-  <div class="weekDatepicker__date">
-    <p>T</p>
-    <p>04</p>
-
-  </div>
-  <div class="weekDatepicker__date">
-    <p>F</p>
-    <p>05</p>
-  </div>
-  <div class="weekDatepicker__date">
-    <p>S</p>
-    <p>05</p>
-  </div>
-  <div class="weekDatepicker__date">
-    <p>S</p>
-    <p>07</p>
+  <div
+    class="weekDatepicker__date"
+    v-for="{ date, dayAlias, timestamp } in weekArray"
+    :key="`${date}${dayAlias}`"
+    :class="isSelected(timestamp)"
+  >
+    <p>{{ dayAlias }}</p>
+    <p>{{ date }}</p>
   </div>
 </div>
 </template>
@@ -38,6 +18,7 @@
 <script>
 import vIcon from '@/components/v-icon.vue';
 import { useStore } from 'vuex';
+import { computed, reactive, watch } from 'vue';
 
 export default {
   components: {
@@ -45,13 +26,48 @@ export default {
   },
   setup() {
     const store = useStore();
+    const currentTimestamp = computed(() => store.state.currentTimestamp);
+    const weekArray = reactive(new Array(7));
+
+    for (let i = 0; i < weekArray.length; i += 1) {
+      const alias = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+      weekArray[i] = {
+        dayAlias: alias[i],
+        date: null,
+        timestamp: null,
+      };
+    }
+
+    const updateWeek = () => {
+      const d = new Date(currentTimestamp.value);
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      for (let i = 0; i < weekArray.length; i += 1) {
+        weekArray[i].date = new Date(new Date(currentTimestamp.value).setDate(diff + i)).getDate();
+        weekArray[i].timestamp = new Date(new Date(currentTimestamp.value).setDate(diff + i)).getTime();
+      }
+    };
+    updateWeek();
+
+    watch(() => currentTimestamp.value, () => {
+      updateWeek();
+    });
 
     const openCalendarModal = () => {
       store.commit('calendarModal/OPEN');
     };
 
+    const isSelected = (timestamp) => {
+      if (timestamp === currentTimestamp.value) return 'selected';
+      return '';
+    };
+
     return {
       openCalendarModal,
+      currentTimestamp,
+      weekArray,
+      isSelected,
     };
   },
 };

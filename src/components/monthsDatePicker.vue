@@ -11,7 +11,7 @@
     <div class="topbar__current">
       <i class="fas fa-chevron-left" @click="setMonth(-1)"></i>
         <span>
-          {{ `${dateInfo.year} / ${dateInfo.month}` }}
+          {{ `${new Date(currentTimestamp).getFullYear()} / ${new Date(currentTimestamp).getMonth() + 1}` }}
         </span>
       <i class="fas fa-chevron-right" @click="setMonth(1)"></i>
     </div>
@@ -53,8 +53,7 @@
 import vIcon from '@/components/v-icon.vue';
 import vCalendar from '@/components/v-calendar.vue';
 import vBtn from '@/components/v-btn.vue';
-import convertTimeStamp from '@/hooks/convertTimeStamp';
-import { computed, reactive } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
@@ -66,9 +65,14 @@ export default {
   setup() {
     const store = useStore();
     const currentTimestamp = computed(() => store.state.currentTimestamp);
-    const dateInfo = reactive(convertTimeStamp(currentTimestamp.value));
-    const nextMonthTimestamp = computed(() => new Date(dateInfo.year, dateInfo.month, 1).getTime());
 
+    // const nextMonthTimestamp = computed(() => new Date(
+    //   new Date(currentTimestamp.value).getFullYear(),
+    //   new Date(currentTimestamp.value).getMonth() + 2,
+    //   1,
+    // ).getTime());
+
+    const nextMonthTimestamp = computed(() => new Date(new Date(currentTimestamp.value).setMonth(new Date(currentTimestamp.value).getMonth() + 1)).getTime());
     const closeCalendarModal = () => {
       store.commit('calendarModal/CLOSE');
     };
@@ -91,7 +95,6 @@ export default {
     return {
       closeCalendarModal,
       currentTimestamp,
-      dateInfo,
       nextMonthTimestamp,
       setNewTimestamp,
       setMonth,

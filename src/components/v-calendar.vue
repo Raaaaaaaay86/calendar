@@ -1,6 +1,6 @@
 <template>
     <div class="calendar__monthTopic" v-if="showMonth">
-      {{ dateInfo.year }} / {{ dateInfo.month}}
+      {{ new Date(currentTimestamp).getFullYear() }} / {{ new Date(currentTimestamp).getMonth() + 1 }}
     </div>
     <div class="calendar">
       <div
@@ -15,9 +15,13 @@
 </template>
 
 <script>
-import { ref, reactive, computed } from 'vue';
+import {
+  reactive,
+  computed,
+  ref,
+  watch,
+} from 'vue';
 import { useStore } from 'vuex';
-import convertTimeStamp from '@/hooks/convertTimeStamp';
 
 export default {
   props: {
@@ -33,27 +37,25 @@ export default {
   },
   setup(props) {
     const store = useStore();
-    const dateArray = reactive(new Array(35).fill(null));
-    const currentTimestamp = ref(props.currentTimestamp);
-    const dateInfo = reactive(convertTimeStamp(currentTimestamp.value));
-    const lastDateOfMonth = new Date(dateInfo.year, dateInfo.month, 0);
-    const weekDayOfFirstDate = new Date(dateInfo.year, dateInfo.month - 1, 1).getDay();
-    const lastDateOfLastMonth = new Date(dateInfo.year, dateInfo.month - 1, 0).getDate();
+    const dateArray = reactive(new Array(36).fill(null));
+    const lastDateOfMonth = ref(new Date(new Date(props.currentTimestamp).getFullYear(), new Date(props.currentTimestamp).getMonth(), 0));
+    const weekDayOfFirstDate = ref(new Date(new Date(props.currentTimestamp).getFullYear(), new Date(props.currentTimestamp).getMonth(), 1).getDay());
+    const lastDateOfLastMonth = ref(new Date(new Date(props.currentTimestamp).getFullYear(), new Date(props.currentTimestamp).getMonth(), 0).getDate());
 
-    for (let i = 0, dateCounter = 1; i < 35; i += 1) {
-      if (i > weekDayOfFirstDate - 2 && dateCounter <= lastDateOfMonth.getDate()) {
-        dateArray[i] = {
-          date: dateCounter,
-          timestamp: new Date(dateInfo.year, lastDateOfMonth.getMonth(), dateCounter).getTime(),
-        };
-        dateCounter += 1;
+    const renderCalendar = () => {
+      for (let i = 0, dateCounter = 1; i < 36; i += 1) {
+        if (i > weekDayOfFirstDate.value - 2 && dateCounter <= lastDateOfMonth.value.getDate()) {
+          dateArray[i] = {
+            date: dateCounter,
+            timestamp: new Date(new Date(props.currentTimestamp).getFullYear(), lastDateOfMonth.value.getMonth() + 1, dateCounter).getTime(),
+          };
+          dateCounter += 1;
+        }
       }
-    }
 
-    (function prevAndNextDates() {
       const tempAry = [];
 
-      for (let i = 0, dateCounter = lastDateOfLastMonth; i < dateArray.length; i += 1) {
+      for (let i = 0, dateCounter = lastDateOfLastMonth.value; i < dateArray.length; i += 1) {
         if (dateArray[i]) break;
         tempAry.unshift(dateCounter);
         dateCounter -= 1;
@@ -74,7 +76,9 @@ export default {
           dateCounter += 1;
         }
       }
-    }());
+    };
+
+    renderCalendar();
 
     const prevOrNext = (date, index) => {
       if (!dateArray[index].timestamp) {
@@ -98,13 +102,23 @@ export default {
       return 'selected';
     };
 
+    watch(() => props.currentTimestamp, (newTs) => {
+      lastDateOfMonth.value = new Date(new Date(newTs).getFullYear(), new Date(props.currentTimestamp).getMonth(), 0);
+      weekDayOfFirstDate.value = new Date(new Date(newTs).getFullYear(), new Date(newTs).getMonth(), 1).getDay();
+      lastDateOfLastMonth.value = new Date(new Date(newTs).getFullYear(), new Date(newTs).getMonth(), 0).getDate();
+      dateArray.fill(null);
+      renderCalendar();
+    });
+
     return {
       dateArray,
-      dateInfo,
       prevOrNext,
       isSelected,
       tempSelectedDate,
       select,
+      lastDateOfMonth,
+      weekDayOfFirstDate,
+      lastDateOfLastMonth,
     };
   },
 };
@@ -120,7 +134,7 @@ export default {
   margin-top: 1.5rem;
   justify-items: center;
   align-items: center;
-  font-size: .5rem;
+  font-size: 1rem;
   color: #767676;
   &:last-of-type {
     margin-top: 0;

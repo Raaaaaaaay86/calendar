@@ -66,5 +66,6 @@ export default {
 
 .date {
   margin: 0 1rem;
+  width: 5.3rem;
 }
 </style>

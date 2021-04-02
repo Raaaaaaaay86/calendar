@@ -10,10 +10,11 @@ export default createStore({
   mutations: {
     SET_NEW_TIME_BY_TEMP(state) {
       state.currentTimestamp = state.calendarModal.tempSelectedDate;
+      console.log('new currentTimestamp: ', state.currentTimestamp, new Date(state.currentTimestamp));
     },
     SET_NEW_TIME(state, { timestamp }) {
       state.currentTimestamp = timestamp;
-      console.log('new currentTimestamp: ', state.currentTimestamp);
+      console.log('new currentTimestamp: ', state.currentTimestamp, new Date(state.currentTimestamp));
     },
   },
   modules: {
