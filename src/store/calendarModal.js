@@ -1,7 +1,7 @@
 const calendarModal = {
   namespaced: true,
   state: () => ({
-    showModal: false,
+    showModal: true,
     tempSelectedDate: 0,
   }),
   actions: {

@@ -43,43 +43,55 @@ export default {
     const lastDateOfLastMonth = ref(new Date(new Date(props.currentTimestamp).getFullYear(), new Date(props.currentTimestamp).getMonth(), 0).getDate());
 
     const renderCalendar = () => {
-      for (let i = 0, dateCounter = 1; i < 36; i += 1) {
-        if (i > weekDayOfFirstDate.value - 2 && dateCounter <= lastDateOfMonth.value.getDate()) {
-          dateArray[i] = {
-            date: dateCounter,
-            timestamp: new Date(new Date(props.currentTimestamp).getFullYear(), lastDateOfMonth.value.getMonth() + 1, dateCounter).getTime(),
+      const date = new Date(props.currentTimestamp);
+      date.setDate(1);
+      const lastDate = new Date(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        0,
+      ).getDate();
+      const prevLastDay = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        0,
+      ).getDate();
+      const firstDayIndex = date.getDay() - 1;
+      const nextFirstDate = new Date(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        1,
+      ).getDate();
+
+      for (let i = firstDayIndex, j = prevLastDay; i >= 0; i -= 1, j -= 1) {
+        if (i - 1 >= 0) {
+          dateArray[i - 1] = {
+            date: j,
           };
-          dateCounter += 1;
         }
       }
 
-      const tempAry = [];
-
-      for (let i = 0, dateCounter = lastDateOfLastMonth.value; i < dateArray.length; i += 1) {
-        if (dateArray[i]) break;
-        tempAry.unshift(dateCounter);
-        dateCounter -= 1;
-      }
-
-      for (let i = 0; i < dateArray.length; i += 1) {
-        if (dateArray[i]) break;
+      for (let i = firstDayIndex, j = date.getDate(); i < lastDate + firstDayIndex; i += 1, j += 1) {
+        const d = new Date(props.currentTimestamp);
         dateArray[i] = {
-          date: tempAry[i],
+          date: j,
+          timestamp: new Date(d.setDate(j)).getTime(),
         };
       }
 
-      for (let i = 0, dateCounter = 1; i < dateArray.length; i += 1) {
+      for (let i = 0, j = nextFirstDate; i < dateArray.length; i += 1) {
         if (dateArray[i] === null) {
           dateArray[i] = {
-            date: dateCounter,
+            date: j,
           };
-          dateCounter += 1;
+
+          j += 1;
         }
       }
     };
 
     renderCalendar();
 
+    // eslint-disable-next-line arrow-body-style
     const prevOrNext = (date, index) => {
       if (!dateArray[index].timestamp) {
         return 'disabled';
