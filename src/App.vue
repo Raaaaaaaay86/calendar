@@ -2,7 +2,7 @@
   <div>
     <div class="toolbar">
       <div>
-        <small-datepicker />
+        <small-datepicker :current-timestamp="currentTimestamp" />
         <v-select :items="['週檢視', '日檢視']"></v-select>
         <v-user-info />
       </div>
@@ -10,7 +10,7 @@
         <week-datepicker />
       </div>
     </div>
-    <div class="calendarArea inspect--day">
+    <div class="calendarArea">
       <timeline />
       <day-calendar />
       <day-calendar />
@@ -21,15 +21,21 @@
       <day-calendar />
     </div>
   </div>
+  <teleport to='#app'>
+    <months-datepicker v-if="showCalendarModal"/>
+  </teleport>
 </template>
 
 <script>
+import { computed, watch } from 'vue';
+import { useStore } from 'vuex';
 import timeline from '@/components/timeline.vue';
 import vSelect from '@/components/v-select.vue';
 import vUserInfo from '@/components/v-userInfo.vue';
 import dayCalendar from '@/components/dayCalendar.vue';
 import smallDatepicker from '@/components/smallDatepicker.vue';
 import weekDatepicker from '@/components/weekDatepicker.vue';
+import monthsDatepicker from '@/components/monthsDatepicker.vue';
 
 export default {
   name: 'App',
@@ -40,6 +46,26 @@ export default {
     smallDatepicker,
     weekDatepicker,
     timeline,
+    monthsDatepicker,
+  },
+  setup() {
+    const store = useStore();
+    const showCalendarModal = computed(() => store.state.calendarModal.showModal);
+    const currentTimestamp = computed(() => store.state.currentTimestamp);
+
+    watch(showCalendarModal, (newValue) => {
+      const body = document.querySelector('body');
+
+      if (newValue) {
+        body.style.overflow = 'hidden';
+      } else {
+        body.style.overflow = 'auto';
+      }
+    });
+    return {
+      showCalendarModal,
+      currentTimestamp,
+    };
   },
 };
 
@@ -55,6 +81,7 @@ export default {
   padding: .5rem 0rem 1rem 0rem;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
   background-color: #fff;
+  z-index: 900;
   > div:first-of-type {
     display: flex;
   }
@@ -67,7 +94,7 @@ export default {
 .calendarArea {
   z-index: -1;
   padding-top: 128px;
-  overflow: hidden;
+  // overflow: hidden;
   display: grid;
   grid-template-columns: 1.5fr repeat(7, 1fr);
 }

@@ -1,6 +1,8 @@
 <template>
 <div class="weekDatepicker">
-  <v-icon class="icon--calendar"></v-icon>
+  <v-icon class="icon--calendar" @click="openCalendarModal()">
+    <i class="far fa-calendar"></i>
+  </v-icon>
   <div class="weekDatepicker__date">
     <p>M</p>
     <p>01</p>
@@ -35,10 +37,22 @@
 
 <script>
 import vIcon from '@/components/v-icon.vue';
+import { useStore } from 'vuex';
 
 export default {
   components: {
     vIcon,
+  },
+  setup() {
+    const store = useStore();
+
+    const openCalendarModal = () => {
+      store.commit('calendarModal/OPEN');
+    };
+
+    return {
+      openCalendarModal,
+    };
   },
 };
 </script>

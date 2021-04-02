@@ -39,7 +39,7 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "vue/no-unused-components": "off"
+      "max-len": "off"
     }
   },
   "browserslist": [
