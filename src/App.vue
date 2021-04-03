@@ -5,7 +5,6 @@
         <small-datepicker :current-timestamp="currentTimestamp" />
         <v-select :items="['週檢視', '日檢視']" @select="changeView"></v-select>
         <v-select :items="['莉', '登出']"></v-select>
-        <!-- <v-user-info /> -->
       </div>
       <div>
         <week-datepicker />
@@ -23,11 +22,12 @@
         :reservations="reservationMatch(dateObject.timestamp)"
       />
     </div>
-    <div class="btnArea">
-      <v-btn>
+    <div class="btnArea" v-if="!RvModalIsShow">
+      <v-btn @click="openRvModal()">
         + 新增預約
       </v-btn>
     </div>
+    <addRvModal v-if="RvModalIsShow"/>
   </div>
   <teleport to='#app'>
     <months-datepicker v-if="showCalendarModal"/>
@@ -36,7 +36,7 @@
 
 <script>
 import {
-  computed, watch, ref,
+  computed, watch, ref, onMounted,
 } from 'vue';
 import { useStore } from 'vuex';
 import timeline from '@/components/timeline.vue';
@@ -46,6 +46,7 @@ import smallDatepicker from '@/components/smallDatepicker.vue';
 import weekDatepicker from '@/components/weekDatepicker.vue';
 import monthsDatepicker from '@/components/monthsDatepicker.vue';
 import VBtn from '@/components/v-btn.vue';
+import addRvModal from '@/components/addRvModal.vue';
 
 export default {
   name: 'App',
@@ -57,6 +58,7 @@ export default {
     timeline,
     monthsDatepicker,
     VBtn,
+    addRvModal,
   },
   setup() {
     const store = useStore();
@@ -66,6 +68,9 @@ export default {
     const userData = computed(() => store.state.userData);
     const viewByDay = ref(false);
     const dateObjects = ref(JSON.parse(JSON.stringify(currentWeek.value)));
+
+    const localStorageData = JSON.parse(localStorage.getItem('calendarData'));
+    store.commit('INITIALIZE_DATA', localStorageData);
 
     watch(showCalendarModal, (newValue) => {
       const body = document.querySelector('body');
@@ -103,7 +108,7 @@ export default {
       }
     };
 
-    watch(currentTimestamp, (newValue) => {
+    watch([currentTimestamp, userData], (newValue) => {
       const date = new Date(newValue);
 
       switch (viewByDay.value) {
@@ -127,7 +132,7 @@ export default {
         default:
           break;
       }
-    });
+    }, { deep: true });
 
     const workTimeMatch = (dateTimestamp) => {
       const hasRecord = Object.prototype.hasOwnProperty.call(userData.value.workTimes, dateTimestamp);
@@ -141,6 +146,11 @@ export default {
       return {};
     };
 
+    const RvModalIsShow = computed(() => store.state.addRvModal.showModal);
+    const openRvModal = () => {
+      store.commit('addRvModal/OPEN');
+    };
+
     return {
       showCalendarModal,
       currentTimestamp,
@@ -151,6 +161,8 @@ export default {
       userData,
       workTimeMatch,
       reservationMatch,
+      openRvModal,
+      RvModalIsShow,
     };
   },
 };

@@ -75,9 +75,6 @@ export default {
     const store = useStore();
     const currentWeek = computed(() => store.getters.currentWeek);
     const el = ref();
-    // oneday 1440mins 86400sec
-    // offsetHieght = 1920
-    // oneMinHeight = 1920 / 1440mins = 1.33333
 
     const decidePositon = (range) => {
       const minutesOfDay = 1440;
@@ -122,19 +119,20 @@ export default {
 }
 
 .reservation {
+  padding: .5rem;
+  box-sizing: border-box;
+  font-size: 0.5rem;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   display: flex;
-  padding: .5rem;
   justify-content: center;
   align-items: flex-start;
+  text-align: center;
   background-color: $secondary;
   border-radius: 9px;
-  text-align: center;
   z-index: 20;
-  box-sizing: border-box;
 }
 
 .workTime {
