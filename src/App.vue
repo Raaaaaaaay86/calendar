@@ -108,7 +108,6 @@ export default {
           dateObjects.value[0] = currentWeek.value[
             currentWeek.value.findIndex((dateInfo) => dateInfo.timestamp === date.getTime())
           ];
-          console.log(dateObjects.value);
           break;
         case '週檢視':
           viewByDay.value = false;

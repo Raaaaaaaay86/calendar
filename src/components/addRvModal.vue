@@ -9,6 +9,13 @@
         選擇日期： {{ fullDate }}
       </p>
       <p>
+        類型：
+        <select v-model="rvType">
+          <option value="reservations">服務預約</option>
+          <option value="workTimes">班表</option>
+        </select>
+      </p>
+      <p v-if="rvType === 'reservations'">
         預約名稱:
         <input type="text" v-model="tempRvData.topic">
       </p>
@@ -35,7 +42,7 @@
 <script>
 import VBtn from '@/components/v-btn.vue';
 import { useStore } from 'vuex';
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 export default {
   components: {
@@ -45,6 +52,7 @@ export default {
     const store = useStore();
     const fullDate = computed(() => store.getters.fullDate);
     const currentTimestamp = computed(() => store.state.currentTimestamp);
+    const rvType = ref('reservations');
     const tempRvData = reactive({
       topic: '',
       startAt: '',
@@ -81,12 +89,18 @@ export default {
         tempRvData.endAt.split(':')[1],
       ).getTime();
 
-      store.commit('ADD_RV', {
+      if (endAtTimestamp < startAtTimestamp) return alert('結束時間不可早於開始時間');
+
+      const rvData = {
         timestamp: tempRvData.timestamp,
         topic: tempRvData.topic,
         startAt: startAtTimestamp,
         endAt: endAtTimestamp,
-      });
+      };
+
+      store.commit('ADD_RV', { rvData, rvType: rvType.value });
+      closeRvModal();
+      return true;
     };
 
     return {
@@ -94,6 +108,7 @@ export default {
       closeRvModal,
       tempRvData,
       addRv,
+      rvType,
     };
   },
 };
@@ -108,7 +123,7 @@ export default {
   right: 0;
   bottom: 0;
   padding: 1rem;
-  height: 11rem;
+  height: 14rem;
   background-color: #fff;
   color: $primary;
   border: 1px solid #e5e5e5;
@@ -131,13 +146,11 @@ export default {
       line-height: 2rem;
       display: flex;
       align-items: center;
-      > input {
+      > input , > select{
         border: 1px solid $primary;
         margin-left: .5rem;
         padding-left: 0.25rem;;
         border-radius: 5px;
-      }
-      > input[type="time"] {
         color: $primary;
       }
     }

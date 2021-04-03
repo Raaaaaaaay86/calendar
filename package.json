@@ -41,7 +41,8 @@
     "rules": {
       "max-len": "off",
       "no-unused-vars": "warn",
-      "object-curly-newline": "off"
+      "object-curly-newline": "off",
+      "no-alert": "off"
     }
   },
   "browserslist": [
