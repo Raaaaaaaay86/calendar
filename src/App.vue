@@ -36,7 +36,7 @@
 
 <script>
 import {
-  computed, watch, ref, onMounted,
+  computed, watch, ref,
 } from 'vue';
 import { useStore } from 'vuex';
 import timeline from '@/components/timeline.vue';
@@ -70,7 +70,17 @@ export default {
     const dateObjects = ref(JSON.parse(JSON.stringify(currentWeek.value)));
 
     const localStorageData = JSON.parse(localStorage.getItem('calendarData'));
-    store.commit('INITIALIZE_DATA', localStorageData);
+
+    if (localStorageData === null) {
+      const structure = {
+        reservations: {},
+        workTimes: {},
+      };
+      localStorage.setItem('calendarData', JSON.stringify(structure));
+      store.commit('INITIALIZE_DATA', JSON.parse(localStorage.getItem('calendarData')));
+    } else {
+      store.commit('INITIALIZE_DATA', localStorageData);
+    }
 
     watch(showCalendarModal, (newValue) => {
       const body = document.querySelector('body');
@@ -98,6 +108,7 @@ export default {
           dateObjects.value[0] = currentWeek.value[
             currentWeek.value.findIndex((dateInfo) => dateInfo.timestamp === date.getTime())
           ];
+          console.log(dateObjects.value);
           break;
         case '週檢視':
           viewByDay.value = false;
@@ -108,8 +119,8 @@ export default {
       }
     };
 
-    watch([currentTimestamp, userData], (newValue) => {
-      const date = new Date(newValue);
+    watch([currentTimestamp, userData], ([newTimestamp]) => {
+      const date = new Date(newTimestamp);
 
       switch (viewByDay.value) {
         case true:
