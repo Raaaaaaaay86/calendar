@@ -13,7 +13,13 @@
     </div>
     <div class="calendarArea">
       <timeline />
-      <day-calendar v-for="i in calendarNum" :key="i" :view-day="viewByDay"/>
+      <day-calendar
+        v-for="dateObject in dateObjects"
+        :key="dateObject.timestamp"
+        :view-day="viewByDay"
+        :timestamp="dateObject.timestamp"
+        :test="new Date(dateObject.timestamp)"
+      />
     </div>
   </div>
   <teleport to='#app'>
@@ -22,7 +28,9 @@
 </template>
 
 <script>
-import { computed, watch, ref } from 'vue';
+import {
+  computed, watch, ref,
+} from 'vue';
 import { useStore } from 'vuex';
 import timeline from '@/components/timeline.vue';
 import vSelect from '@/components/v-select.vue';
@@ -45,8 +53,9 @@ export default {
     const store = useStore();
     const showCalendarModal = computed(() => store.state.calendarModal.showModal);
     const currentTimestamp = computed(() => store.state.currentTimestamp);
-    const calendarNum = ref(7);
+    const currentWeek = computed(() => store.getters.currentWeek);
     const viewByDay = ref(false);
+    const dateObjects = ref(JSON.parse(JSON.stringify(currentWeek.value)));
 
     watch(showCalendarModal, (newValue) => {
       const body = document.querySelector('body');
@@ -59,14 +68,25 @@ export default {
     });
 
     const changeView = (newView) => {
+      const date = new Date(currentTimestamp.value);
+
       switch (newView) {
         case '日檢視':
-          calendarNum.value = 1;
           viewByDay.value = true;
+          dateObjects.value.length = 1;
+
+          date.setHours(0);
+          date.setMinutes(0);
+          date.setSeconds(0);
+          date.setMilliseconds(0);
+
+          dateObjects.value[0] = currentWeek.value[
+            currentWeek.value.findIndex((dateInfo) => dateInfo.timestamp === date.getTime())
+          ];
           break;
         case '週檢視':
-          calendarNum.value = 7;
           viewByDay.value = false;
+          dateObjects.value = JSON.parse(JSON.stringify(date.getTime()));
           break;
         default:
           break;
@@ -77,8 +97,9 @@ export default {
       showCalendarModal,
       currentTimestamp,
       changeView,
-      calendarNum,
+      dateObjects,
       viewByDay,
+      currentWeek,
     };
   },
 };
@@ -107,7 +128,7 @@ export default {
 
 .calendarArea {
   z-index: -1;
-  padding-top: 128px;
+  padding-top: 140px;
   // overflow: hidden;
   display: grid;
   grid-template-columns: 1.5fr repeat(7, 1fr);

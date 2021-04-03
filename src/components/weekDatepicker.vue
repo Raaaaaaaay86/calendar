@@ -30,23 +30,21 @@ export default {
     const currentTimestamp = computed(() => store.state.currentTimestamp);
     const weekArray = reactive(new Array(7));
 
-    for (let i = 0; i < weekArray.length; i += 1) {
-      const alias = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-
-      weekArray[i] = {
-        dayAlias: alias[i],
-        date: null,
-        timestamp: null,
-      };
-    }
-
     const updateWeek = () => {
       const d = new Date(currentTimestamp.value);
       const day = d.getDay();
       const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      const alias = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
       for (let i = 0; i < weekArray.length; i += 1) {
-        weekArray[i].date = new Date(new Date(currentTimestamp.value).setDate(diff + i)).getDate();
-        weekArray[i].timestamp = new Date(new Date(currentTimestamp.value).setDate(diff + i)).getTime();
+        const tempDate = new Date(
+          new Date(currentTimestamp.value).setDate(diff + i),
+        );
+        weekArray[i] = {
+          date: tempDate.getDate(),
+          timestamp: tempDate.getTime(),
+          dayAlias: alias[i],
+        };
       }
     };
     updateWeek();

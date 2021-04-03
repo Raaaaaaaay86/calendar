@@ -4,6 +4,23 @@ import calendarModal from '@/store/calendarModal';
 export default createStore({
   state: {
     currentTimestamp: new Date().getTime(),
+    user: {
+      reservations: [
+        {
+          topic: '美甲保養',
+          customer: 'Ash',
+          level: 3,
+          startAt: new Date(2021, 3, 4, 12).getTime(),
+          endAt: new Date(2021, 3, 4, 14).getTime(),
+        },
+      ],
+      workTimes: [
+        {
+          startAt: new Date(2021, 3, 4, 9).getTime(),
+          endAt: new Date(2021, 3, 4, 16).getTime(),
+        },
+      ],
+    },
   },
   actions: {
   },
@@ -15,6 +32,33 @@ export default createStore({
     SET_NEW_TIME(state, { timestamp }) {
       state.currentTimestamp = timestamp;
       console.log('new currentTimestamp: ', state.currentTimestamp, new Date(state.currentTimestamp));
+    },
+  },
+  getters: {
+    currentWeek(state) {
+      const d = new Date(state.currentTimestamp);
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+
+      const weekArray = new Array(7);
+
+      for (let i = 0; i < weekArray.length; i += 1) {
+        const tempDate = new Date(
+          new Date(state.currentTimestamp).setDate(diff + i),
+        );
+
+        tempDate.setHours(0);
+        tempDate.setMinutes(0);
+        tempDate.setSeconds(0);
+        tempDate.setMilliseconds(0);
+
+        weekArray[i] = {
+          date: tempDate.getDate(),
+          timestamp: tempDate.getTime(),
+        };
+      }
+
+      return weekArray;
     },
   },
   modules: {

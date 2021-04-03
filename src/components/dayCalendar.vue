@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
   props: {
@@ -35,6 +37,19 @@ export default {
       type: Boolean,
       default: true,
     },
+    timestamp: {
+      type: Number,
+      required: true,
+      default: new Date(),
+    },
+  },
+  setup() {
+    const store = useStore();
+    const currentWeek = computed(() => store.getters.currentWeek);
+
+    return {
+      currentWeek,
+    };
   },
 };
 </script>
