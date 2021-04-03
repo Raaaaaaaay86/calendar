@@ -20,5 +20,7 @@ export default {
   padding: 1rem 3rem;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  user-select: none;
+  cursor: pointer;
 }
 </style>

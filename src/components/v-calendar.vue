@@ -148,6 +148,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
+    cursor: pointer;
     &.selected {
       color: white;
       background-color: $primary;
@@ -159,6 +161,7 @@ export default {
   &__monthTopic {
     text-align: center;
     margin: 1rem 0;
+    user-select: none;
   }
 }
 </style>

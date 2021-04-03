@@ -1,5 +1,5 @@
 <template>
-  <div class="dayCalendar week">
+  <div class="dayCalendar" :class="viewDay ? 'day' : 'week'">
     <div></div>
     <div></div>
     <div></div>
@@ -30,7 +30,11 @@
 <script>
 
 export default {
-  components: {
+  props: {
+    viewDay: {
+      type: Boolean,
+      default: true,
+    },
   },
 };
 </script>
@@ -44,7 +48,7 @@ export default {
     border-right: 1px solid #C0C0C0;;
     border-bottom: 1px solid #C0C0C0;;
   }
-  &.oneDay {
+  &.day {
     grid-column: 2 / span 7;
   }
   &.week {

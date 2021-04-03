@@ -8,6 +8,7 @@
     v-for="{ date, dayAlias, timestamp } in weekArray"
     :key="`${date}${dayAlias}`"
     :class="isSelected(timestamp)"
+    @click="select(timestamp)"
   >
     <p>{{ dayAlias }}</p>
     <p>{{ date }}</p>
@@ -63,11 +64,17 @@ export default {
       return '';
     };
 
+    const select = (newTs) => {
+      if (!newTs) return;
+      store.commit('SET_NEW_TIME', { timestamp: newTs });
+    };
+
     return {
       openCalendarModal,
       currentTimestamp,
       weekArray,
       isSelected,
+      select,
     };
   },
 };
@@ -99,6 +106,8 @@ export default {
 }
 
 .weekDatepicker__date {
+  user-select: none;
+  cursor: pointer;
   &.selected {
     color: white;
     background-color: #7F74B4;

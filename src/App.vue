@@ -3,8 +3,9 @@
     <div class="toolbar">
       <div>
         <small-datepicker :current-timestamp="currentTimestamp" />
-        <v-select :items="['週檢視', '日檢視']"></v-select>
-        <v-user-info />
+        <v-select :items="['週檢視', '日檢視']" @select="changeView"></v-select>
+        <v-select :items="['莉', '登出']"></v-select>
+        <!-- <v-user-info /> -->
       </div>
       <div>
         <week-datepicker />
@@ -12,13 +13,7 @@
     </div>
     <div class="calendarArea">
       <timeline />
-      <day-calendar />
-      <day-calendar />
-      <day-calendar />
-      <day-calendar />
-      <day-calendar />
-      <day-calendar />
-      <day-calendar />
+      <day-calendar v-for="i in calendarNum" :key="i" :view-day="viewByDay"/>
     </div>
   </div>
   <teleport to='#app'>
@@ -27,11 +22,10 @@
 </template>
 
 <script>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import { useStore } from 'vuex';
 import timeline from '@/components/timeline.vue';
 import vSelect from '@/components/v-select.vue';
-import vUserInfo from '@/components/v-userInfo.vue';
 import dayCalendar from '@/components/dayCalendar.vue';
 import smallDatepicker from '@/components/smallDatepicker.vue';
 import weekDatepicker from '@/components/weekDatepicker.vue';
@@ -41,7 +35,6 @@ export default {
   name: 'App',
   components: {
     vSelect,
-    vUserInfo,
     dayCalendar,
     smallDatepicker,
     weekDatepicker,
@@ -52,6 +45,8 @@ export default {
     const store = useStore();
     const showCalendarModal = computed(() => store.state.calendarModal.showModal);
     const currentTimestamp = computed(() => store.state.currentTimestamp);
+    const calendarNum = ref(7);
+    const viewByDay = ref(false);
 
     watch(showCalendarModal, (newValue) => {
       const body = document.querySelector('body');
@@ -62,9 +57,28 @@ export default {
         body.style.overflow = 'auto';
       }
     });
+
+    const changeView = (newView) => {
+      switch (newView) {
+        case '日檢視':
+          calendarNum.value = 1;
+          viewByDay.value = true;
+          break;
+        case '週檢視':
+          calendarNum.value = 7;
+          viewByDay.value = false;
+          break;
+        default:
+          break;
+      }
+    };
+
     return {
       showCalendarModal,
       currentTimestamp,
+      changeView,
+      calendarNum,
+      viewByDay,
     };
   },
 };

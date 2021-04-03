@@ -62,10 +62,13 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  user-select: none;
+  cursor: pointer;
 }
 
 .date {
   margin: 0 1rem;
   width: 5.3rem;
+  user-select: none;
 }
 </style>

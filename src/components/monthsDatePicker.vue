@@ -115,6 +115,7 @@ export default {
   background-color: #fff;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   padding: 1rem;
+  user-select: none;
 }
 
 .topbar {
@@ -126,6 +127,9 @@ export default {
   margin: -1rem;
   margin-bottom: 0;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  > i {
+    cursor: pointer;
+  }
   &__title {
     display: flex;
     align-items: center;
@@ -137,6 +141,9 @@ export default {
     width: 100%;
     margin-top: 1.25rem;
     text-align: center;
+    > i {
+      cursor: pointer;
+    }
     span {
       margin-right: 1rem;
       margin-left: 1rem;
