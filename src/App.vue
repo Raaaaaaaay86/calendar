@@ -19,6 +19,8 @@
         :view-day="viewByDay"
         :timestamp="dateObject.timestamp"
         :test="new Date(dateObject.timestamp)"
+        :work-time="workTimeMatch(dateObject.timestamp)"
+        :reservations="reservationMatch(dateObject.timestamp)"
       />
     </div>
   </div>
@@ -54,6 +56,7 @@ export default {
     const showCalendarModal = computed(() => store.state.calendarModal.showModal);
     const currentTimestamp = computed(() => store.state.currentTimestamp);
     const currentWeek = computed(() => store.getters.currentWeek);
+    const userData = computed(() => store.state.userData);
     const viewByDay = ref(false);
     const dateObjects = ref(JSON.parse(JSON.stringify(currentWeek.value)));
 
@@ -86,11 +89,49 @@ export default {
           break;
         case '週檢視':
           viewByDay.value = false;
-          dateObjects.value = JSON.parse(JSON.stringify(date.getTime()));
+          dateObjects.value = JSON.parse(JSON.stringify(currentWeek.value));
           break;
         default:
           break;
       }
+    };
+
+    watch(currentTimestamp, (newValue) => {
+      const date = new Date(newValue.value);
+
+      switch (viewByDay.value) {
+        case true:
+          viewByDay.value = true;
+          dateObjects.value.length = 1;
+
+          date.setHours(0);
+          date.setMinutes(0);
+          date.setSeconds(0);
+          date.setMilliseconds(0);
+
+          dateObjects.value[0] = currentWeek.value[
+            currentWeek.value.findIndex((dateInfo) => dateInfo.timestamp === date.getTime())
+          ];
+          break;
+        case false:
+          viewByDay.value = false;
+          dateObjects.value = JSON.parse(JSON.stringify(currentWeek.value));
+          break;
+        default:
+          break;
+      }
+    });
+
+    const workTimeMatch = (dateTimestamp) => {
+      const hasRecord = Object.prototype.hasOwnProperty.call(userData.value.workTimes, dateTimestamp);
+      if (hasRecord) return userData.value.workTimes[dateTimestamp];
+      return {};
+    };
+
+    const reservationMatch = (dateTimestamp) => {
+      const hasRecord = Object.prototype.hasOwnProperty.call(userData.value.reservations, dateTimestamp);
+      if (hasRecord) return userData.value.reservations[dateTimestamp];
+      return {};
     };
 
     return {
@@ -100,6 +141,9 @@ export default {
       dateObjects,
       viewByDay,
       currentWeek,
+      userData,
+      workTimeMatch,
+      reservationMatch,
     };
   },
 };

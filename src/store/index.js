@@ -4,22 +4,33 @@ import calendarModal from '@/store/calendarModal';
 export default createStore({
   state: {
     currentTimestamp: new Date().getTime(),
-    user: {
-      reservations: [
-        {
-          topic: '美甲保養',
-          customer: 'Ash',
-          level: 3,
-          startAt: new Date(2021, 3, 4, 12).getTime(),
-          endAt: new Date(2021, 3, 4, 14).getTime(),
+    userData: {
+      reservations: {
+        1617465600000: {
+          reservations: [
+            {
+              topic: '美甲保養',
+              customer: 'Ash',
+              memberLevel: 1,
+              startAt: new Date(2021, 3, 4, 12).getTime(),
+              endAt: new Date(2021, 3, 4, 14).getTime(),
+            },
+            {
+              topic: '持久霧眉',
+              customer: 'Sammy',
+              memberLevel: 3,
+              startAt: new Date(2021, 3, 4, 12).getTime(),
+              endAt: new Date(2021, 3, 4, 14).getTime(),
+            },
+          ],
         },
-      ],
-      workTimes: [
-        {
+      },
+      workTimes: {
+        1617465600000: {
           startAt: new Date(2021, 3, 4, 9).getTime(),
-          endAt: new Date(2021, 3, 4, 16).getTime(),
+          endAt: new Date(2021, 3, 4, 19).getTime(),
         },
-      ],
+      },
     },
   },
   actions: {

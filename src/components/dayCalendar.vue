@@ -1,5 +1,5 @@
 <template>
-  <div class="dayCalendar" :class="viewDay ? 'day' : 'week'">
+  <div ref="el" class="dayCalendar" :class="viewDay ? 'day' : 'week'">
     <div></div>
     <div></div>
     <div></div>
@@ -24,11 +24,12 @@
     <div></div>
     <div></div>
     <div></div>
+    <div class="reservation" v-if="workTime.startAt"></div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
@@ -42,13 +43,31 @@ export default {
       required: true,
       default: new Date(),
     },
+    workTime: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    reservations: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     const currentWeek = computed(() => store.getters.currentWeek);
+    const el = ref();
+    // oneday 1440mins 86400sec
+    onMounted(() => {
+      if (props.workTime.startAt) {
+        console.log(el.value.offsetHeight);
+      }
+    });
 
     return {
       currentWeek,
+      el,
     };
   },
 };
@@ -59,6 +78,7 @@ export default {
 .dayCalendar {
   grid-auto-rows: 5rem;
   display: grid;
+  position: relative;
   > div {
     border-right: 1px solid #C0C0C0;;
     border-bottom: 1px solid #C0C0C0;;
@@ -69,5 +89,14 @@ export default {
   &.week {
     grid-column: auto;
   }
+}
+
+.reservation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3rem;
+  background-color: red;
 }
 </style>
