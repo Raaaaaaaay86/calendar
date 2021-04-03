@@ -18,10 +18,15 @@
         :key="dateObject.timestamp"
         :view-day="viewByDay"
         :timestamp="dateObject.timestamp"
-        :test="new Date(dateObject.timestamp)"
+        :id="new Date(dateObject.timestamp).getTime() + 'calendar'"
         :work-time="workTimeMatch(dateObject.timestamp)"
         :reservations="reservationMatch(dateObject.timestamp)"
       />
+    </div>
+    <div class="btnArea">
+      <v-btn>
+        + 新增預約
+      </v-btn>
     </div>
   </div>
   <teleport to='#app'>
@@ -40,6 +45,7 @@ import dayCalendar from '@/components/dayCalendar.vue';
 import smallDatepicker from '@/components/smallDatepicker.vue';
 import weekDatepicker from '@/components/weekDatepicker.vue';
 import monthsDatepicker from '@/components/monthsDatepicker.vue';
+import VBtn from '@/components/v-btn.vue';
 
 export default {
   name: 'App',
@@ -50,6 +56,7 @@ export default {
     weekDatepicker,
     timeline,
     monthsDatepicker,
+    VBtn,
   },
   setup() {
     const store = useStore();
@@ -97,7 +104,7 @@ export default {
     };
 
     watch(currentTimestamp, (newValue) => {
-      const date = new Date(newValue.value);
+      const date = new Date(newValue);
 
       switch (viewByDay.value) {
         case true:
@@ -124,13 +131,13 @@ export default {
 
     const workTimeMatch = (dateTimestamp) => {
       const hasRecord = Object.prototype.hasOwnProperty.call(userData.value.workTimes, dateTimestamp);
-      if (hasRecord) return userData.value.workTimes[dateTimestamp];
+      if (hasRecord) return userData.value.workTimes[dateTimestamp].times;
       return {};
     };
 
     const reservationMatch = (dateTimestamp) => {
       const hasRecord = Object.prototype.hasOwnProperty.call(userData.value.reservations, dateTimestamp);
-      if (hasRecord) return userData.value.reservations[dateTimestamp];
+      if (hasRecord) return userData.value.reservations[dateTimestamp].rv;
       return {};
     };
 
@@ -178,4 +185,16 @@ export default {
   grid-template-columns: 1.5fr repeat(7, 1fr);
 }
 
+.btnArea {
+  position: fixed;
+  height: 5rem;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  background: linear-gradient(0deg, #fff, transparent);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>

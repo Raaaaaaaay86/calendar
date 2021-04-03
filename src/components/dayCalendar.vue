@@ -24,12 +24,29 @@
     <div></div>
     <div></div>
     <div></div>
-    <div class="reservation" v-if="workTime.startAt"></div>
+    <div
+      v-for="rv in reservations"
+      class="reservation"
+      :key="rv.timestamp + 'rv'"
+      :style="decidePositon(rv)"
+    >
+      <span>
+        {{ rv.topic }}
+      </span>
+    </div>
+    <div
+      v-for="time in workTime"
+      :key="time+'work'"
+      class="workTime"
+      :style="decidePositon(time)"
+    ></div>
   </div>
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue';
+import {
+  computed, ref,
+} from 'vue';
 import { useStore } from 'vuex';
 
 export default {
@@ -59,15 +76,26 @@ export default {
     const currentWeek = computed(() => store.getters.currentWeek);
     const el = ref();
     // oneday 1440mins 86400sec
-    onMounted(() => {
-      if (props.workTime.startAt) {
-        console.log(el.value.offsetHeight);
-      }
-    });
+    // offsetHieght = 1920
+    // oneMinHeight = 1920 / 1440mins = 1.33333
+
+    const decidePositon = (range) => {
+      const minutesOfDay = 1440;
+      const oneMinHeight = +(1920 / minutesOfDay).toFixed(3);
+      const millisecondsPerMin = 60000;
+      const totalTimeByMinutes = (range.endAt - range.startAt) / millisecondsPerMin;
+      const timeOffset = (range.startAt - props.timestamp) / millisecondsPerMin;
+
+      return {
+        height: `${totalTimeByMinutes * oneMinHeight}px`,
+        top: `${timeOffset * oneMinHeight}px`,
+      };
+    };
 
     return {
       currentWeek,
       el,
+      decidePositon,
     };
   },
 };
@@ -75,6 +103,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+@import '@/assets/styles/_variables.scss';
+
 .dayCalendar {
   grid-auto-rows: 5rem;
   display: grid;
@@ -96,7 +126,25 @@ export default {
   top: 0;
   left: 0;
   right: 0;
+  display: flex;
+  padding: .5rem;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: $secondary;
+  border-radius: 9px;
+  text-align: center;
+  z-index: 20;
+  box-sizing: border-box;
+}
+
+.workTime {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 3rem;
-  background-color: red;
+  background-color: rgba(229, 229, 229, .6);
+  z-index: 10;
+  box-sizing: border-box;
 }
 </style>
