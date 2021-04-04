@@ -59,6 +59,7 @@ export default {
     const rvType = ref('reservations');
     const tempRvData = reactive({
       topic: '',
+      customer: '',
       startAt: '',
       endAt: '',
       timestamp: '',
@@ -98,6 +99,7 @@ export default {
       const rvData = {
         timestamp: tempRvData.timestamp,
         topic: tempRvData.topic,
+        customer: tempRvData.customer,
         startAt: startAtTimestamp,
         endAt: endAtTimestamp,
       };
