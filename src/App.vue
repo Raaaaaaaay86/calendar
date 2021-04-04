@@ -69,6 +69,7 @@ export default {
     const viewByDay = ref(false);
     const dateObjects = ref(JSON.parse(JSON.stringify(currentWeek.value)));
 
+    // Get Localstorage to initialize data. Set items to Localstorage if it's first time opened.
     const localStorageData = JSON.parse(localStorage.getItem('calendarData'));
 
     if (localStorageData === null) {
@@ -81,17 +82,9 @@ export default {
     } else {
       store.commit('INITIALIZE_DATA', localStorageData);
     }
+    //
 
-    watch(showCalendarModal, (newValue) => {
-      const body = document.querySelector('body');
-
-      if (newValue) {
-        body.style.overflow = 'hidden';
-      } else {
-        body.style.overflow = 'auto';
-      }
-    });
-
+    // Switch inpecting mode
     const changeView = (newView) => {
       const date = new Date(currentTimestamp.value);
 
@@ -117,7 +110,9 @@ export default {
           break;
       }
     };
+    //
 
+    // Re-render calendar if currentTimestamp or userDate has changed.
     watch([currentTimestamp, userData], ([newTimestamp]) => {
       const date = new Date(newTimestamp);
 
@@ -143,7 +138,9 @@ export default {
           break;
       }
     }, { deep: true });
+    //
 
+    // Pass data to component's prop if timestamp is matched.
     const workTimeMatch = (dateTimestamp) => {
       const hasRecord = Object.prototype.hasOwnProperty.call(userData.value.workTimes, dateTimestamp);
       if (hasRecord) return userData.value.workTimes[dateTimestamp].times;
@@ -155,6 +152,7 @@ export default {
       if (hasRecord) return userData.value.reservations[dateTimestamp].rv;
       return {};
     };
+    //
 
     const RvModalIsShow = computed(() => store.state.addRvModal.showModal);
     const openRvModal = () => {
@@ -202,7 +200,8 @@ export default {
 .calendarArea {
   z-index: -1;
   padding-top: 140px;
-  // overflow: hidden;
+  height: calc(100vh - 140px);
+  overflow: scroll;
   display: grid;
   grid-template-columns: 1.5fr repeat(7, 1fr);
 }
