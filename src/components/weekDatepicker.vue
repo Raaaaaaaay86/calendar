@@ -33,9 +33,10 @@ export default {
     const updateWeek = () => {
       const d = new Date(currentTimestamp.value);
       const day = d.getDay();
-      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1); // diff of current date and Monday of the week
       const alias = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
+      // Render from first day of week (Monday)
       for (let i = 0; i < weekArray.length; i += 1) {
         const tempDate = new Date(
           new Date(currentTimestamp.value).setDate(diff + i),

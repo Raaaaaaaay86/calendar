@@ -21,19 +21,12 @@ export default {
   props: {
     items: {
       required: false,
-      // default: [
-      //   '週檢視',
-      //   '日檢視',
-      // ],
     },
   },
   setup(props, { emit }) {
     const showMenu = ref(false);
     const selectedItem = ref(props.items[0]);
     const el = ref();
-
-    // onMounted(() => {
-    // });
 
     const openMenu = () => {
       showMenu.value = true;
@@ -66,7 +59,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .select {
   background-color: #DEDAF4;
