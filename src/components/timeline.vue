@@ -35,4 +35,12 @@ export default {
   }
 }
 
+@media (min-width: 576px) {
+  .timeline {
+    > div {
+      font-size: 1rem;
+    }
+  }
+}
+
 </style>
