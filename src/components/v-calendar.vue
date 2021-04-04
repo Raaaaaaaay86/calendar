@@ -100,13 +100,11 @@ export default {
       return undefined;
     };
 
-    // const tempSelectedDate = computed(() => store.state.calendarModal.tempSelectedDate);
-    const tempSelectedDate = ref(0);
+    const tempSelectedDate = computed(() => store.state.calendarModal.tempSelectedDate);
 
     const select = (newTs) => {
       if (!newTs) return;
-      // store.commit('calendarModal/SELECT_NEW_DAY', { timestamp: newTs });
-      tempSelectedDate.value = newTs;
+      store.commit('calendarModal/SELECT_NEW_DAY', { timestamp: newTs });
     };
 
     const isSelected = (ts) => {
