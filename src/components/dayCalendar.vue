@@ -121,7 +121,7 @@ export default {
 .reservation {
   padding: .5rem;
   box-sizing: border-box;
-  font-size: 0.5rem;
+  font-size: 12px;
   position: absolute;
   top: 0;
   left: 0;
@@ -133,6 +133,8 @@ export default {
   background-color: $secondary;
   border-radius: 9px;
   z-index: 20;
+  line-height: 1rem;
+  letter-spacing: .5px;
 }
 
 .workTime {

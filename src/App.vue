@@ -204,6 +204,9 @@ export default {
   overflow: scroll;
   display: grid;
   grid-template-columns: 1.5fr repeat(7, 1fr);
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .btnArea {

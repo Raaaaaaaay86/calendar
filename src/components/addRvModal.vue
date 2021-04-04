@@ -19,6 +19,10 @@
         預約名稱:
         <input type="text" v-model="tempRvData.topic">
       </p>
+      <p v-if="rvType === 'reservations'">
+        預約姓名:
+        <input type="text" v-model="tempRvData.customer">
+      </p>
       <p>
         開始時間：
         <input type="time" v-model="tempRvData.startAt">
@@ -123,7 +127,6 @@ export default {
   right: 0;
   bottom: 0;
   padding: 1rem;
-  height: 14rem;
   background-color: #fff;
   color: $primary;
   border: 1px solid #e5e5e5;
