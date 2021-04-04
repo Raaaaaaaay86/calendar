@@ -4,55 +4,8 @@ import addRvModal from '@/store/addRvModal';
 
 export default createStore({
   state: {
-    // currentTimestamp: new Date().getTime(),
     currentTimestamp: new Date().getTime(),
     userData: {},
-    // userData: {
-    //   reservations: {
-    //     1617465600000: {
-    //       rv: [
-    //         {
-    //           topic: '美甲保養',
-    //           startAt: new Date(2021, 3, 4, 12, 30).getTime(),
-    //           endAt: new Date(2021, 3, 4, 14).getTime(),
-    //         },
-    //         {
-    //           topic: '持久霧眉',
-    //           startAt: new Date(2021, 3, 4, 15).getTime(),
-    //           endAt: new Date(2021, 3, 4, 16).getTime(),
-    //         },
-    //       ],
-    //     },
-    //     1617292800000: {
-    //       rv: [
-    //         {
-    //           topic: '美甲保養',
-    //           customer: 'Ash',
-    //           memberLevel: 1,
-    //           startAt: new Date(2021, 3, 2, 3, 20).getTime(),
-    //           endAt: new Date(2021, 3, 2, 5).getTime(),
-    //         },
-    //         {
-    //           topic: '持久霧眉',
-    //           customer: 'Sammy',
-    //           memberLevel: 3,
-    //           startAt: new Date(2021, 3, 2, 10).getTime(),
-    //           endAt: new Date(2021, 3, 2, 12).getTime(),
-    //         },
-    //       ],
-    //     },
-    //   },
-    //   workTimes: {
-    //     1617465600000: {
-    //       times: [
-    //         {
-    //           startAt: new Date(2021, 3, 4, 9).getTime(),
-    //           endAt: new Date(2021, 3, 4, 19).getTime(),
-    //         },
-    //       ],
-    //     },
-    //   },
-    // },
   },
   actions: {
   },
@@ -69,8 +22,6 @@ export default createStore({
       state.userData = localStorageData;
     },
     ADD_RV(state, { rvData, rvType }) {
-      console.log('vuex', rvType);
-
       switch (rvType) {
         case 'workTimes':
           if (!state.userData.workTimes[rvData.timestamp]?.times) {
