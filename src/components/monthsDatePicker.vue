@@ -64,15 +64,13 @@ export default {
   },
   setup() {
     const store = useStore();
+
     const currentTimestamp = computed(() => store.state.currentTimestamp);
+    const nextMonthTimestamp = computed(() => new Date(
+      new Date(currentTimestamp.value)
+        .setMonth(new Date(currentTimestamp.value).getMonth() + 1),
+    ).getTime());
 
-    // const nextMonthTimestamp = computed(() => new Date(
-    //   new Date(currentTimestamp.value).getFullYear(),
-    //   new Date(currentTimestamp.value).getMonth() + 2,
-    //   1,
-    // ).getTime());
-
-    const nextMonthTimestamp = computed(() => new Date(new Date(currentTimestamp.value).setMonth(new Date(currentTimestamp.value).getMonth() + 1)).getTime());
     const closeCalendarModal = () => {
       store.commit('calendarModal/CLOSE');
     };

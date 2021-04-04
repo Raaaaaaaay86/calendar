@@ -19,6 +19,7 @@ import {
   reactive,
   computed,
   watch,
+  ref,
 } from 'vue';
 import { useStore } from 'vuex';
 
@@ -41,23 +42,28 @@ export default {
     const renderCalendar = () => {
       const date = new Date(props.currentTimestamp);
       date.setDate(1);
+
       const lastDate = new Date(
         date.getFullYear(),
         date.getMonth() + 1,
         0,
       ).getDate();
+
       const prevLastDay = new Date(
         date.getFullYear(),
         date.getMonth(),
         0,
       ).getDate();
+
       const firstDayIndex = date.getDay() - 1;
+
       const nextFirstDate = new Date(
         date.getFullYear(),
         date.getMonth() + 1,
         1,
       ).getDate();
 
+      // Render previous month dates
       for (let i = firstDayIndex, j = prevLastDay; i >= 0; i -= 1, j -= 1) {
         if (i - 1 >= 0) {
           dateArray[i - 1] = {
@@ -66,6 +72,7 @@ export default {
         }
       }
 
+      // Render current month dates
       for (let i = firstDayIndex, j = date.getDate(); i < lastDate + firstDayIndex; i += 1, j += 1) {
         const d = new Date(props.currentTimestamp);
         dateArray[i] = {
@@ -74,20 +81,18 @@ export default {
         };
       }
 
+      // Render rest of dates of next month
       for (let i = 0, j = nextFirstDate; i < dateArray.length; i += 1) {
         if (dateArray[i] === null) {
           dateArray[i] = {
             date: j,
           };
-
           j += 1;
         }
       }
     };
-
     renderCalendar();
 
-    // eslint-disable-next-line arrow-body-style
     const prevOrNext = (date, index) => {
       if (!dateArray[index].timestamp) {
         return 'disabled';
@@ -95,11 +100,13 @@ export default {
       return undefined;
     };
 
-    const tempSelectedDate = computed(() => store.state.calendarModal.tempSelectedDate);
+    // const tempSelectedDate = computed(() => store.state.calendarModal.tempSelectedDate);
+    const tempSelectedDate = ref(0);
 
     const select = (newTs) => {
       if (!newTs) return;
-      store.commit('calendarModal/SELECT_NEW_DAY', { timestamp: newTs });
+      // store.commit('calendarModal/SELECT_NEW_DAY', { timestamp: newTs });
+      tempSelectedDate.value = newTs;
     };
 
     const isSelected = (ts) => {
