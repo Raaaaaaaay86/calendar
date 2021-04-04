@@ -170,4 +170,32 @@ export default {
   }
 }
 
+@media (min-width: 576px) {
+  .topbar__week, .calendarsArea {
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+}
+
+@media (min-width: 769px) {
+  .topbar__week, .calendarsArea {
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .topbar__week, .calendarsArea {
+    margin-left: 30%;
+    margin-right: 30%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .topbar__week, .calendarsArea {
+    margin-left: 35%;
+    margin-right: 35%;
+  }
+}
+
 </style>

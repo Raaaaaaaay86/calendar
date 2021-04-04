@@ -72,4 +72,5 @@ export default {
   text-align: center;
   user-select: none;
 }
+
 </style>

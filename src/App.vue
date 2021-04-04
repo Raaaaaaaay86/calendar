@@ -20,6 +20,7 @@
         :id="new Date(dateObject.timestamp).getTime() + 'calendar'"
         :work-time="workTimeMatch(dateObject.timestamp)"
         :reservations="reservationMatch(dateObject.timestamp)"
+        :view-by-day="viewByDay"
       />
     </div>
     <div class="btnArea" v-if="!RvModalIsShow">
@@ -194,6 +195,20 @@ export default {
   > div:nth-of-type(2) {
     margin-top: 1.5em;
     display: flex;
+  }
+}
+
+@media (min-width: 576px) {
+  // .toolbar {
+  //   > div:first-of-type {
+  //     margin: 0 7%;
+  //   }
+  // }
+  .datepicker--small {
+    margin-left: 8% !important;
+  }
+  .select:last-of-type {
+    margin-right: 4%;
   }
 }
 

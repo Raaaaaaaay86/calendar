@@ -4,6 +4,7 @@ import addRvModal from '@/store/addRvModal';
 
 export default createStore({
   state: {
+    // currentTimestamp: new Date().getTime(),
     currentTimestamp: new Date().getTime(),
     userData: {},
     // userData: {

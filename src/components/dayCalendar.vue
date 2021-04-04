@@ -27,12 +27,16 @@
     <div
       v-for="rv in reservations"
       class="reservation"
+      :class="viewByDay ? 'view--day' : '' "
       :key="rv.timestamp + 'rv'"
       :style="decidePositon(rv)"
     >
-      <span>
+      <p class="reservation__topic">
         {{ rv.topic }}
-      </span>
+      </p>
+      <p class="reservation__customer" v-if="viewByDay">
+        {{ rv.customer }}
+      </p>
     </div>
     <div
       v-for="time in workTime"
@@ -69,6 +73,11 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    viewByDay: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   setup(props) {
@@ -130,11 +139,33 @@ export default {
   justify-content: center;
   align-items: flex-start;
   text-align: center;
-  background-color: $secondary;
+  background-color: rgba(214, 214, 214, .7);
   border-radius: 9px;
   z-index: 20;
   line-height: 1rem;
   letter-spacing: .5px;
+
+  &__customer {
+    color: rgba(0, 0, 0, .5);
+  }
+}
+
+.view {
+  &--day {
+    justify-content: flex-start;
+    flex-direction: column;
+    line-height: 1.5rem;
+  }
+}
+
+@media (min-width: 576px) {
+  .reservation, .view--day {
+    line-height: 2rem;
+
+    &__topic, &__customer {
+      font-size: 1.5rem;
+    }
+  }
 }
 
 .workTime {
@@ -143,7 +174,7 @@ export default {
   left: 0;
   right: 0;
   height: 3rem;
-  background-color: rgba(229, 229, 229, .6);
+  background-color: rgba(232, 232, 232, .7);
   z-index: 10;
   box-sizing: border-box;
 }
