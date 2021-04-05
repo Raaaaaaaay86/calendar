@@ -208,7 +208,7 @@ export default {
     margin-left: 8% !important;
   }
   .select:last-of-type {
-    margin-right: 4%;
+    margin-right: 8%;
   }
 }
 
